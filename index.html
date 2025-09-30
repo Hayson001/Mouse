@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Trail Cursor</title>
+    <style>
+        /* CSS for the page and cursor dots */
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2em;
+            cursor: none; /* Hide the default system cursor */
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        h1 {
+            font-weight: 300;
+            font-size: 3rem;
+        }
+
+        /* Styling for each dot in the trail */
+        .trail-dot {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none; /* Allows you to click through the dots */
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen; /* Cool effect on different backgrounds */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+    <div class="trail-dot"></div>
+
+    <h1>A trail worthy of a visionary.</h1>
+    <p>The animation is handled entirely by JavaScript for a smooth, fluid motion.</p>
+
+    <script>
+        // JavaScript for the smooth animation logic
+        const dots = document.querySelectorAll('.trail-dot');
+        
+        // Classic Apple rainbow colors
+        const colors = [
+          "#5EB2ED", // Blue
+          "#63C655", // Green
+          "#F5D757", // Yellow
+          "#F1A14A", // Orange
+          "#E36653", // Red
+          "#9C6ADE"  // Purple
+        ];
+
+        // An array to store the position of each dot
+        const dotPositions = [];
+        for (let i = 0; i < dots.length; i++) {
+            dotPositions.push({ x: 0, y: 0 });
+        }
+
+        // Apply colors and initial properties
+        dots.forEach((dot, index) => {
+            dot.style.backgroundColor = colors[index % colors.length];
+        });
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // Update mouse coordinates on move
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // The animation function
+        function animateDots() {
+            let prevX = mouseX;
+            let prevY = mouseY;
+
+            // Each dot smoothly follows the one in front of it
+            dotPositions.forEach((pos, index) => {
+                const currentDot = dots[index];
+                
+                // This is the "easing" or "lag" effect. 
+                // A smaller number (e.g., 0.1) gives more lag.
+                // A larger number (e.g., 0.8) makes it stiffer.
+                pos.x += (prevX - pos.x) * 0.35;
+                pos.y += (prevY - pos.y) * 0.35;
+
+                // Apply the new position to the dot's style
+                currentDot.style.left = pos.x + 'px';
+                currentDot.style.top = pos.y + 'px';
+
+                // Update the "previous" position for the next dot in the chain
+                prevX = pos.x;
+                prevY = pos.y;
+            });
+
+            // This requests the browser to run this function again before the next repaint
+            requestAnimationFrame(animateDots);
+        }
+
+        // Start the animation loop
+        animateDots();
+    </script>
+</body>
+</html>
